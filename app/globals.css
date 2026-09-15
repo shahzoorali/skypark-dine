@@ -1,0 +1,402 @@
+@import './tokens.css';
+
+/* ──────────────────────────────────────────────
+ * Dine-in menu surface.
+ *
+ * The cafe-ordering kit committed to a dark treatment (charcoal ground,
+ * near-black cards) rather than the cream default in tokens.css. Kept,
+ * because a QR menu is read at a table in the evening. The token file is
+ * the source of truth for every value below.
+ * ────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--skypark-charcoal);
+  color: var(--fg-on-inverse);
+  overscroll-behavior-y: none;
+}
+
+body { font-family: var(--font-body); }
+
+:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+.app {
+  min-height: 100dvh;
+  max-width: 560px;
+  margin-inline: auto;
+  background: var(--skypark-charcoal);
+}
+
+/* ── Header ── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--skypark-charcoal);
+  padding: calc(var(--space-3) + env(safe-area-inset-top, 0px)) var(--space-4) var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-on-inverse);
+}
+
+.header__logo { height: 28px; width: auto; display: block; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: rgba(245, 240, 232, 0.08);
+  border: 1px solid rgba(245, 240, 232, 0.12);
+  border-radius: var(--radius-pill);
+  padding: 5px 11px;
+  color: var(--fg-on-inverse-2);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+}
+
+.iconbtn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1);
+  display: flex;
+  color: var(--fg-on-inverse);
+}
+
+.iconbtn__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 4px;
+  background: var(--skypark-orange);
+  color: var(--fg-on-brand);
+  border-radius: var(--radius-pill);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* ── Hero (Savoria-style) ── */
+.hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(120% 90% at 70% 15%, rgba(243, 112, 33, 0.28) 0%, transparent 62%),
+    linear-gradient(160deg, #3a2a1c 0%, var(--skypark-charcoal) 68%);
+  background-size: cover;
+  background-position: center;
+}
+
+.hero__media--photo { background-blend-mode: multiply; }
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, var(--skypark-charcoal) 4%, rgba(45, 45, 45, 0.55) 46%, transparent 100%);
+}
+
+.hero__eyebrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--skypark-orange);
+  margin-bottom: var(--space-2);
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(38px, 12vw, 60px);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-on-inverse);
+  margin: 0;
+}
+
+.hero__rule {
+  width: 52px;
+  height: 3px;
+  background: var(--skypark-gold);
+  border-radius: var(--radius-pill);
+  margin: var(--space-4) 0 var(--space-3);
+}
+
+.hero__sub {
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-on-inverse-2);
+  max-width: 34ch;
+}
+
+/* ── Category nav ── */
+.catnav {
+  position: sticky;
+  top: 61px;
+  z-index: 15;
+  background: var(--skypark-charcoal);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-on-inverse);
+}
+
+.catnav__scroll {
+  display: flex;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.catnav__scroll::-webkit-scrollbar { display: none; }
+
+.pill {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding: var(--space-2) 18px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(245, 240, 232, 0.08);
+  color: rgba(245, 240, 232, 0.56);
+  transition: background var(--dur-fast) var(--ease-out-confident),
+              color var(--dur-fast) var(--ease-out-confident);
+}
+
+.pill[aria-current='true'] {
+  background: var(--skypark-orange);
+  color: var(--fg-on-brand);
+}
+
+/* ── Sections & grid ── */
+.section { padding-top: var(--space-5); }
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.section__label {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--fg-accent);
+}
+
+.section__timing {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg-on-inverse-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+}
+
+@media (max-width: 359px) { .grid { grid-template-columns: 1fr; } }
+
+/* ── Item card ── */
+.card {
+  background: #1E1E1E;
+  border: 1px solid rgba(245, 240, 232, 0.07);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-out-confident);
+}
+
+.card:active { transform: scale(0.985); }
+.card--out { opacity: 0.45; }
+
+.card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(145deg, #3a2a1c, #241a12);
+  overflow: hidden;
+}
+
+.card__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.card__body {
+  padding: var(--space-3) 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.card__toprow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.card__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: var(--lh-snug);
+  color: var(--fg-on-inverse);
+}
+
+.card__desc {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+  color: rgba(245, 240, 232, 0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
+}
+
+.price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--fg-on-inverse);
+  white-space: nowrap;
+}
+
+.price__from {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg-on-inverse-2);
+}
+
+.price__cur { font-size: 12px; font-weight: 600; opacity: 0.64; margin-right: 1px; }
+
+.badge {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--skypark-gold);
+  color: var(--skypark-charcoal);
+}
+
+/* Veg / non-veg marker — a legal requirement on Indian menus, not decoration. */
+.diet {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+}
+
+.diet::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.diet--veg { color: #4CAF50; }
+.diet--nonveg { color: #D64541; }
+.diet--egg { color: var(--skypark-gold); }
+.diet--unknown { display: none; }
+
+/* ── Call a waiter (phase 1 CTA) ── */
+.waiter {
+  position: sticky;
+  bottom: 0;
+  z-index: 18;
+  padding: var(--space-3) var(--space-4)
+           calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, var(--skypark-charcoal) 62%, transparent);
+}
+
+.waiter__btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--skypark-orange);
+  color: var(--fg-on-brand);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-body);
+  letter-spacing: var(--tracking-snug);
+  cursor: pointer;
+  box-shadow: var(--shadow-e2);
+}
+
+.waiter__btn:hover { background: var(--skypark-orange-shade); }
+
+.footnote {
+  padding: var(--space-5) var(--space-4) var(--space-6);
+  text-align: center;
+  font-size: var(--fs-caption);
+  color: rgba(245, 240, 232, 0.36);
+  line-height: var(--lh-relaxed);
+}
+
+.spacer { height: var(--space-8); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
