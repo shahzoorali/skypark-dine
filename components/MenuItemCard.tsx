@@ -1,4 +1,5 @@
 import type { MenuItem } from '@/lib/menu';
+import { itemPhoto } from '@/lib/photos';
 
 const DIET_LABEL: Record<MenuItem['diet'], string> = {
   veg: 'Vegetarian',
@@ -12,14 +13,17 @@ function formatPrice(value: number): string {
 }
 
 export function MenuItemCard({ item }: { item: MenuItem }) {
+  const photo = itemPhoto(item);
+
   return (
     <article className={`card${item.inStock ? '' : ' card--out'}`}>
       <div className="card__media">
-        {item.imageUrl ? (
-          // Remote PetPooja CDN images; next/image would need host config we
-          // cannot confirm until a live payload shows the real domain.
+        {photo ? (
+          // Local shots are same-origin; PetPooja's fallback is a remote CDN
+          // whose host we cannot confirm until a live payload shows it, so
+          // next/image is not usable here yet.
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="card__img" src={item.imageUrl} alt="" loading="lazy" />
+          <img className="card__img" src={photo} alt="" loading="lazy" />
         ) : null}
       </div>
 

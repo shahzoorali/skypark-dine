@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# leftover from an interrupted install over the device bridge — delete in Explorer
-/_partial-install
+# generated shot list
+/shotlist.csv

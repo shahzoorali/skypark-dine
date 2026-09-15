@@ -3,6 +3,7 @@ import { MenuHeader } from '@/components/MenuHeader';
 import { Hero } from '@/components/Hero';
 import { MenuSections } from '@/components/MenuSections';
 import { flags } from '@/config/flags';
+import { heroPhoto } from '@/lib/photos';
 
 // The menu changes when the kitchen changes it; the adapter holds the cache.
 export const dynamic = 'force-dynamic';
@@ -18,7 +19,7 @@ export default async function MenuPage({
   return (
     <main className="app">
       <MenuHeader tableNo={table} />
-      <Hero restaurantName={menu.restaurantName} />
+      <Hero restaurantName={menu.restaurantName} imageUrl={heroPhoto} />
       <MenuSections categories={menu.categories} />
 
       {!flags.ordering ? (

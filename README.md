@@ -73,3 +73,56 @@ config/flags.ts  phase gates
 
 `app/tokens.css` is a copy. When the design system changes, re-copy it rather
 than editing it here.
+
+## Photography
+
+The design leans on food photography — without it the cards fall back to a
+gradient and the page reads as a wireframe. Shots live in `public/menu/`, named
+by slugified item name, and a local shot always beats whatever PetPooja has.
+
+```bash
+npm run dev          # in one terminal
+npm run shotlist     # what to shoot, and what's already done
+npm run shotlist -- --csv   # same as a CSV for the shoot
+npm run photos       # after dropping new files in public/menu/
+```
+
+Run `shotlist` against live data to get the real list:
+
+```bash
+MENU_SOURCE=petpooja npm run dev
+npm run shotlist
+```
+
+Two files matter beyond the items:
+
+- `public/menu/hero.jpg` — the hero. Landscape, shot dark; the scrim runs
+  bottom-up over it, so keep the subject in the upper two-thirds.
+- `public/menu/<slug>.jpg` — item cards, 4:3, cropped tight.
+
+`npm run photos` rewrites `public/menu/manifest.json` from whatever is actually
+on disk, so the app can never link a photograph that isn't there. Run it before
+committing new shots.
+
+## Deploy
+
+Vercel, project root at the repo root, framework preset Next.js — no build
+configuration needed.
+
+Environment variables to set in the Vercel project (Production and Preview):
+
+| Variable | Value |
+| --- | --- |
+| `MENU_SOURCE` | `petpooja` once credentials exist, `mock` until then |
+| `PETPOOJA_APP_KEY` | from PetPooja |
+| `PETPOOJA_APP_SECRET` | from PetPooja |
+| `PETPOOJA_ACCESS_TOKEN` | from PetPooja |
+| `PETPOOJA_REST_ID` | `83305` |
+| `PETPOOJA_DEFAULT_TABLE_NO` | any live table number |
+
+Then point `dine.skyparkcafe.in` at the project in Vercel's domain settings and
+add the CNAME your DNS provider asks for.
+
+Leave `MENU_SOURCE` unset on the first deploy. The footer says "Sample data —
+not live" whenever the mock driver is serving, so a preview can never be
+mistaken for the real menu.
