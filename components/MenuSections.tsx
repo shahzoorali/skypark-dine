@@ -1,11 +1,17 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { MenuCategory } from '@/lib/menu';
+import type { Menu, MenuCategory } from '@/lib/menu';
 import { CategoryNav } from './CategoryNav';
 import { MenuItemCard } from './MenuItemCard';
 
-export function MenuSections({ categories }: { categories: MenuCategory[] }) {
+export function MenuSections({
+  categories,
+  source,
+}: {
+  categories: MenuCategory[];
+  source: Menu['source'];
+}) {
   const [activeId, setActiveId] = useState(categories[0]?.id ?? '');
   const sectionRefs = useRef(new Map<string, HTMLElement>());
 
@@ -55,7 +61,7 @@ export function MenuSections({ categories }: { categories: MenuCategory[] }) {
 
           <div className="grid">
             {category.items.map(item => (
-              <MenuItemCard key={item.id} item={item} />
+              <MenuItemCard key={item.id} item={item} source={source} />
             ))}
           </div>
         </section>

@@ -1,4 +1,4 @@
-import type { MenuItem } from '@/lib/menu';
+import type { Menu, MenuItem } from '@/lib/menu';
 import { itemPhoto } from '@/lib/photos';
 
 const DIET_LABEL: Record<MenuItem['diet'], string> = {
@@ -12,8 +12,14 @@ function formatPrice(value: number): string {
   return value.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 }
 
-export function MenuItemCard({ item }: { item: MenuItem }) {
-  const photo = itemPhoto(item);
+export function MenuItemCard({
+  item,
+  source,
+}: {
+  item: MenuItem;
+  source: Menu['source'];
+}) {
+  const photo = itemPhoto(item, source);
 
   return (
     <article className={`card${item.inStock ? '' : ' card--out'}`}>

@@ -20,7 +20,7 @@ export default async function MenuPage({
     <main className="app">
       <MenuHeader tableNo={table} />
       <Hero restaurantName={menu.restaurantName} imageUrl={heroPhoto} />
-      <MenuSections categories={menu.categories} />
+      <MenuSections categories={menu.categories} source={menu.source} />
 
       {!flags.ordering ? (
         <div className="waiter">

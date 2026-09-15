@@ -10,7 +10,8 @@
  * slugs the current menu wants, and which ones are still missing.
  */
 
-import type { MenuItem } from './menu';
+import type { Menu, MenuItem } from './menu';
+import { demoPhoto } from './demo-photos';
 
 export function slugify(name: string): string {
   return name
@@ -28,10 +29,22 @@ import manifest from '@/public/menu/manifest.json';
 
 const available = new Set<string>(manifest.slugs);
 
-export function itemPhoto(item: MenuItem): string | undefined {
+export function itemPhoto(
+  item: MenuItem,
+  source: Menu['source'],
+): string | undefined {
   const slug = slugify(item.name);
+
+  // A real Skypark shot of this dish always wins.
   if (available.has(slug)) return `/menu/${slug}.jpg`;
-  // PetPooja's own image is the fallback, not the preference.
+
+  // Demo imagery is matched by eye, so it is only ever shown over mock data.
+  if (source === 'mock') {
+    const demo = demoPhoto(slug);
+    if (demo) return demo;
+  }
+
+  // PetPooja's own image is the last resort, not the preference.
   return item.imageUrl;
 }
 

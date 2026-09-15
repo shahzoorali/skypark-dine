@@ -89,7 +89,7 @@ body { font-family: var(--font-body); }
 /* ── Hero (Savoria-style) ── */
 .hero {
   position: relative;
-  min-height: 420px;
+  min-height: 460px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -131,11 +131,35 @@ body { font-family: var(--font-body); }
 .hero__title {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(38px, 12vw, 60px);
-  line-height: var(--lh-tight);
+  font-size: clamp(42px, 13vw, 68px);
+  line-height: 0.94;
   letter-spacing: var(--tracking-tight);
   color: var(--fg-on-inverse);
   margin: 0;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero__word { display: block; }
+
+/*
+ * Outlined display word. -webkit-text-stroke is the only reliable way to
+ * stroke text, and is supported everywhere that matters; @supports keeps the
+ * word solid rather than invisible anywhere it is not.
+ */
+@supports (-webkit-text-stroke: 2px currentColor) {
+  .hero__word--outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--fg-on-inverse);
+    padding-left: 2px; /* the stroke sits outside the glyph box */
+  }
+}
+
+@media (min-width: 420px) {
+  @supports (-webkit-text-stroke: 2px currentColor) {
+    .hero__word--outline { -webkit-text-stroke-width: 2.5px; }
+  }
 }
 
 .hero__rule {
