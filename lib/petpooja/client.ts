@@ -1,5 +1,20 @@
 import type { PetpoojaCredentials, PetpoojaMenuResponse } from './types';
 
+/**
+ * Public DineIn API (Apiary docs: https://dineinapi.docs.apiary.io/),
+ * confirmed 2026-09-25 by probing: this is the only endpoint that returns
+ * PetPooja's actual response shape ({success, message, errorCode}) — the
+ * host PetPooja emailed (onlineapipp.petpooja.com/thirdparty_fetch_dinein_menu)
+ * rejects every request at the API Gateway level ("Invalid request body",
+ * no `success` field) and is NOT used any more.
+ *
+ * As of 2026-09-25 this endpoint returns HTTP 200,
+ * {"success":"0","errorCode":"GN_101","message":"Invalid client credentials."}
+ * with the credentials PetPooja emailed for restID f1d89o3ks2 — those
+ * credentials appear to be mapped to the wrong host. Awaiting PetPooja to
+ * confirm/remap (outlet 83305, mapping code m5odcjr4) before this can be
+ * trusted against real data.
+ */
 const MENU_ENDPOINT_STAGING =
   'https://vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com/V1/thirdparty_fetch_dinein_qr_menu';
 
@@ -40,6 +55,13 @@ function credentials(): PetpoojaCredentials {
  * tables only — no menu. Skypark runs one menu across all three areas, so
  * PETPOOJA_DEFAULT_TABLE_NO is used as the menu-fetch key in phase 1 where
  * the customer has no table number yet.
+ *
+ * NOT YET VALIDATED against a live response — this endpoint accepts the
+ * request (HTTP 200, proper PetPooja response shape) but currently rejects
+ * the emailed credentials with errorCode GN_101 "Invalid client
+ * credentials." Run `npm run validate:petpooja` after PetPooja confirms/
+ * remaps the credentials for this host, before trusting this against real
+ * data.
  *
  * MUST only ever be called server-side: these credentials are long-lived
  * secrets and must not reach the browser bundle.

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "photos": "node scripts/photo-manifest.mjs",
-    "shotlist": "node scripts/shotlist.mjs"
+    "shotlist": "node scripts/shotlist.mjs",
+    "validate:petpooja": "node scripts/validate-petpooja.mjs",
+    "probe:petpooja": "node scripts/probe-petpooja.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

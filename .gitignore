@@ -42,3 +42,6 @@ next-env.d.ts
 
 # generated shot list
 /shotlist.csv
+
+# raw PetPooja response dumped by scripts/validate-petpooja.mjs
+petpooja-sample.json
