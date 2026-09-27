@@ -1,22 +1,22 @@
 import type { PetpoojaCredentials, PetpoojaMenuResponse } from './types';
 
 /**
- * Public DineIn API (Apiary docs: https://dineinapi.docs.apiary.io/),
- * confirmed 2026-09-25 by probing: this is the only endpoint that returns
- * PetPooja's actual response shape ({success, message, errorCode}) — the
- * host PetPooja emailed (onlineapipp.petpooja.com/thirdparty_fetch_dinein_menu)
- * rejects every request at the API Gateway level ("Invalid request body",
- * no `success` field) and is NOT used any more.
+ * The host PetPooja emailed. Confirmed WORKING 2026-09-26 with real Skypark
+ * Cafe data (256 items, 37 categories) once two things were fixed:
+ *  1. restID must be m5odcjr4 (our live outlet), not f1d89o3ks2 (PetPooja's
+ *     demo outlet — also emailed, easy to confuse with ours).
+ *  2. Wire field names are hyphenated (app-key, app-secret, access-token),
+ *     not the underscored names PetPooja's own emailed docs used — the
+ *     gateway 400s with "Invalid request body" otherwise.
  *
- * As of 2026-09-25 this endpoint returns HTTP 200,
- * {"success":"0","errorCode":"GN_101","message":"Invalid client credentials."}
- * with the credentials PetPooja emailed for restID f1d89o3ks2 — those
- * credentials appear to be mapped to the wrong host. Awaiting PetPooja to
- * confirm/remap (outlet 83305, mapping code m5odcjr4) before this can be
- * trusted against real data.
+ * The public DineIn API (Apiary docs: https://dineinapi.docs.apiary.io/,
+ * host vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com) was tried as an
+ * alternative when this host looked dead, but even with restID + hyphenated
+ * fields fixed it still rejects with GN_101 "Invalid client credentials" —
+ * do not switch to it without confirming with PetPooja first.
  */
 const MENU_ENDPOINT_STAGING =
-  'https://vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com/V1/thirdparty_fetch_dinein_qr_menu';
+  'https://onlineapipp.petpooja.com/thirdparty_fetch_dinein_menu';
 
 export class PetpoojaError extends Error {}
 
@@ -56,12 +56,16 @@ function credentials(): PetpoojaCredentials {
  * PETPOOJA_DEFAULT_TABLE_NO is used as the menu-fetch key in phase 1 where
  * the customer has no table number yet.
  *
- * NOT YET VALIDATED against a live response — this endpoint accepts the
- * request (HTTP 200, proper PetPooja response shape) but currently rejects
- * the emailed credentials with errorCode GN_101 "Invalid client
- * credentials." Run `npm run validate:petpooja` after PetPooja confirms/
- * remaps the credentials for this host, before trusting this against real
- * data.
+ * NOT YET VALIDATED against a live response — credentials and restID are
+ * now believed correct (see note above). Run `npm run validate:petpooja`
+ * from Shahzoor's own machine to confirm, and to check the response shape
+ * against lib/petpooja/types.ts and normalize.ts before trusting this
+ * against real data.
+ *
+ * PetPooja confirmed 2026-09-26 the wire field names are hyphenated
+ * (app-key, app-secret, access-token), not the underscored names their own
+ * emailed docs used — hence the JSON body is built by hand below rather
+ * than spreading PetpoojaCredentials directly.
  *
  * MUST only ever be called server-side: these credentials are long-lived
  * secrets and must not reach the browser bundle.
@@ -76,7 +80,13 @@ export async function fetchDineInMenu(
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...creds, tableNo: table }),
+    body: JSON.stringify({
+      'app-key': creds.app_key,
+      'app-secret': creds.app_secret,
+      'access-token': creds.access_token,
+      restID: creds.restID,
+      tableNo: table,
+    }),
     cache: 'no-store',
   });
 

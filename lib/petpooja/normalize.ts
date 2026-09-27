@@ -23,7 +23,7 @@ function normalizeItem(raw: PetpoojaItem): MenuItem {
     .filter(Number.isFinite);
 
   const basePrice = num(raw.price);
-  const hasVariations = raw.itemallowvariation === '1' && variationPrices.length > 0;
+  const hasVariations = raw.itemallowvariation === 1 && variationPrices.length > 0;
   const price = hasVariations ? Math.min(...variationPrices) : basePrice;
 
   return {
@@ -35,9 +35,11 @@ function normalizeItem(raw: PetpoojaItem): MenuItem {
     diet: toDiet(raw.item_attributeid),
     imageUrl: raw.item_image_url || undefined,
     categoryId: raw.item_categoryid,
-    // PetPooja omits in_stock on the dine-in payload in some responses;
-    // absence means available, not unavailable.
-    inStock: raw.in_stock !== '0',
+    // Real payload (2026-09-26) uses "instock", not the "in_stock" the docs
+    // showed, and only ever sends "1" or "2" — never "0". Which of 1/2 means
+    // out-of-stock is UNCONFIRMED; this in/out mapping is a placeholder
+    // pending Shahzoor checking a known out-of-stock item in PetPooja admin.
+    inStock: raw.instock !== '0',
     rank: num(raw.itemrank, 9999),
     tags: raw.item_tags ?? [],
   };

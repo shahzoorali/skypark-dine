@@ -59,9 +59,9 @@ try {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      app_key: PETPOOJA_APP_KEY,
-      app_secret: PETPOOJA_APP_SECRET,
-      access_token: PETPOOJA_ACCESS_TOKEN,
+      'app-key': PETPOOJA_APP_KEY,
+      'app-secret': PETPOOJA_APP_SECRET,
+      'access-token': PETPOOJA_ACCESS_TOKEN,
       restID: PETPOOJA_REST_ID,
       tableNo,
     }),
@@ -102,7 +102,7 @@ if (Array.isArray(json.items) && json.items.length) {
   const sample = json.items[0];
   const expected = [
     'itemid', 'itemname', 'item_categoryid', 'price', 'item_attributeid',
-    'itemallowvariation', 'in_stock', 'itemrank',
+    'itemallowvariation', 'instock', 'itemrank',
   ];
   for (const key of expected) {
     if (!(key in sample)) notes.push(`✗ items[0] has no "${key}" — normalize.ts assumes this exists.`);
@@ -112,7 +112,7 @@ if (Array.isArray(json.items) && json.items.length) {
   console.log(`item_attributeid values seen: ${attrValues.join(', ')}`);
   console.log('  lib/petpooja/normalize.ts currently maps 1=veg, 2=nonveg, 24=egg — confirm this against PetPooja\'s actual meaning.\n');
 
-  const withVariation = json.items.filter(i => i.itemallowvariation === '1');
+  const withVariation = json.items.filter(i => i.itemallowvariation === 1);
   console.log(`${withVariation.length} of ${json.items.length} items have itemallowvariation=1`);
   if (withVariation.length && !Array.isArray(withVariation[0].variation)) {
     notes.push('✗ itemallowvariation=1 but no "variation" array on that item.');

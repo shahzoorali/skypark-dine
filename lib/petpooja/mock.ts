@@ -78,7 +78,7 @@ export function mockMenuResponse(): PetpoojaMenuResponse {
 
     for (const [itemname, price, attr, itemdescription] of config.items) {
       itemIndex += 1;
-      const allowVariation = Number(price) >= 429 ? '1' : '0';
+      const allowVariation = Number(price) >= 429 ? 1 : 0;
       items.push({
         itemid: `i${itemIndex}`,
         itemname,
@@ -88,7 +88,7 @@ export function mockMenuResponse(): PetpoojaMenuResponse {
         item_attributeid: attr,
         itemallowvariation: allowVariation,
         variation:
-          allowVariation === '1'
+          allowVariation === 1
             ? [
                 { variationid: `v${itemIndex}a`, name: 'Half', price, active: '1' },
                 {
@@ -100,7 +100,7 @@ export function mockMenuResponse(): PetpoojaMenuResponse {
               ]
             : [],
         active: '1',
-        in_stock: '1',
+        instock: '1',
         itemrank: String(itemIndex),
       });
     }

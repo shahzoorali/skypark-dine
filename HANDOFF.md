@@ -26,65 +26,62 @@ Shahzoor has NOT YET PICKED ONE:
 - `/v2` — Savoria-style single-dish showcase carousel
 Ask him which to keep; the other should then be removed or demoted.
 
-## THE OPEN BLOCKER — PetPooja live menu API
+## PetPooja live menu API — RESOLVED and VALIDATED 2026-09-26
 
-This is the thing actively being worked when this session ended.
+Real Skypark Cafe data now fetches successfully: 256 items, 37 categories,
+real restaurant details. Three separate bugs stacked on top of each other;
+all three are fixed in code.
 
 **Restaurant IDs** (don't confuse these):
 - `83305` — Skypark's ID in the PetPooja admin UI
-- `f1d89o3ks2` — the actual `restID` the API wants (issued by PetPooja by
-  email for third-party integration)
-- `m5odcjr4` — mapping code PetPooja gave 2026-09-25 to confirm outlet
-  83305 is linked to the third-party integration
+- `f1d89o3ks2` — PetPooja's **demo outlet** restID (issued by email
+  2026-09-24 alongside the real credentials; do not use)
+- `m5odcjr4` — the correct `restID` for Skypark's live outlet (83305),
+  confirmed by PetPooja (Malvi Vaghela) 2026-09-26. Set in
+  `.env.local`/`.env.example` as `PETPOOJA_REST_ID`.
 
-**Endpoint — RESOLVED as of 2026-09-25.** Two candidate hosts existed:
-- `onlineapipp.petpooja.com/thirdparty_fetch_dinein_menu` — the one
-  PetPooja emailed. **Confirmed dead**: every request shape tried (7
-  variants — JSON/form-encoded, credentials in body/headers, tableNo
-  present/blank/omitted) got rejected at the API-Gateway level
-  (`{"message":"Invalid request body"}`, no `success` field — not even a
-  PetPooja-shaped response). Do not use this host again.
-- `https://vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com/V1/thirdparty_fetch_dinein_qr_menu`
-  — from the public docs at https://dineinapi.docs.apiary.io/. **This is
-  the correct one.** It returns a real PetPooja response:
-  `{"success":"0","errorCode":"GN_101","message":"Invalid client credentials."}`
-  — HTTP 200, proper shape, request accepted at the gateway.
+**Endpoint:** `onlineapipp.petpooja.com/thirdparty_fetch_dinein_menu` — the
+one PetPooja originally emailed — is correct and working. It had looked
+dead (gateway-level "Invalid request body" on every shape tried) only
+because of the field-name bug below. The Apiary/AWS host
+(`vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com/.../thirdparty_fetch_dinein_qr_menu`,
+from https://dineinapi.docs.apiary.io/) was tried as an alternative and
+still returns `GN_101 "Invalid client credentials"` even with the restID
+and field-name fixes — it is NOT used; don't switch to it without checking
+with PetPooja first. `lib/petpooja/client.ts` defaults to the onlineapipp
+host.
 
-`lib/petpooja/client.ts` already points at this endpoint (commit
-`37cf0c9`, 2026-09-25). **Do not revert it to the onlineapipp host.**
+**Wire field names are hyphenated** (`app-key`, `app-secret`,
+`access-token`), not the underscored names PetPooja's own emailed docs and
+the Apiary docs both use. Malvi confirmed this by email 2026-09-26 after
+sharing a working curl example. `lib/petpooja/client.ts` and
+`scripts/validate-petpooja.mjs` build the JSON body by hand with the
+correct hyphenated keys rather than spreading `PetpoojaCredentials`
+directly (that type keeps underscored field names internally for
+readability — only the wire format is hyphenated).
 
-**Current status: credentials rejected (GN_101) on the correct endpoint.**
-The app_key/app_secret/access_token PetPooja emailed (for restID
-f1d89o3ks2) are being rejected there. Working theory: those credentials
-were only ever mapped against the wrong host (onlineapipp.petpooja.com)
-and need to be remapped/reconfirmed for the Apiary/API-Gateway endpoint —
-possibly what the mapping code `m5odcjr4` is for, possibly needs a
-separate confirmation email to PetPooja support.
+**Real payload shape differs from the docs** — `lib/petpooja/types.ts` and
+`normalize.ts` are now fixed to match:
+- Field is `instock`, not `in_stock`.
+- `itemallowvariation` is a **number** (`0`/`1`), not a string.
+- `item_attributeid` veg/nonveg/egg mapping (1/2/24) — confirmed correct,
+  values `1`, `2`, `24` all seen in the real response.
 
-**Next step:** email PetPooja support (they've been responsive) with:
-> We're hitting https://vv3hiv00yk.execute-api.ap-southeast-1.amazonaws.com/V1/thirdparty_fetch_dinein_qr_menu
-> (your public DineIn API docs) with the app_key/app_secret/access_token/restID
-> you issued for f1d89o3ks2 and get HTTP 200, success:"0", errorCode:"GN_101",
-> message:"Invalid client credentials." Is this the correct endpoint for
-> outlet 83305 (mapping code m5odcjr4)? If so, can you confirm/remap the
-> credentials against it — the ones you sent appear scoped to a different
-> host (onlineapipp.petpooja.com), which rejects every request at the
-> gateway level rather than returning this error format.
+**Still unconfirmed — needs Shahzoor:** `instock` only ever sends `"1"`
+(16 items) or `"2"` (240 items) in the real response, never `"0"` as the
+docs implied. Which value means "out of stock" is a guess right now
+(`normalize.ts` treats `!== '0'` as in-stock, i.e. currently treats BOTH
+values as in-stock — this is almost certainly wrong for the 16 `"1"`
+items). To resolve: mark one specific item out-of-stock in the PetPooja
+admin for outlet 83305, note its name, re-run
+`PETPOOJA_DEFAULT_TABLE_NO=1 node scripts/validate-petpooja.mjs`, and check
+whether that item's `instock` value is `1` or `2` in the fresh
+`petpooja-sample.json`. Fix the `!== '0'` check in `normalize.ts`
+accordingly once known.
 
-Once credentials are confirmed working, run (from a real machine, not a
-sandboxed/bridged shell — see note below):
-```
-npm run validate:petpooja
-```
-This checks the live response against the structural assumptions baked
-into `lib/petpooja/types.ts` and `lib/petpooja/normalize.ts` — especially
-the GUESSED `item_attributeid` → veg/nonveg/egg mapping (1/2/24), which
-has never been confirmed against real data. Fix any mismatches found.
-
-`npm run probe:petpooja` (in `scripts/probe-petpooja.mjs`) has 9 request
-variants total (7 against the old host, kept for the record; 2 against the
-correct Apiary host) — useful if credentials still fail after a supposed
-fix, to isolate exactly what's wrong.
+`npm run probe:petpooja` (`scripts/probe-petpooja.mjs`) still has the older
+underscore-field request variants kept for the historical record — not
+updated, since the mismatch is now understood and documented above.
 
 ## Architecture notes
 

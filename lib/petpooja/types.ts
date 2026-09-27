@@ -51,12 +51,12 @@ export interface PetpoojaItem {
   price?: string;
   minimumpreparationtime?: string;
   item_attributeid?: string; // veg / non-veg / egg marker
-  itemallowvariation?: string;
+  itemallowvariation?: number;
   variation?: PetpoojaVariation[];
   addon?: PetpoojaItemAddon[];
   item_image_url?: string;
   active?: string;
-  in_stock?: string;
+  instock?: string;
   itemrank?: string;
   item_tags?: string[];
 }
