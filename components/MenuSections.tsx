@@ -8,9 +8,11 @@ import { MenuItemCard } from './MenuItemCard';
 export function MenuSections({
   categories,
   source,
+  arDemo,
 }: {
   categories: MenuCategory[];
   source: Menu['source'];
+  arDemo: boolean;
 }) {
   const [activeId, setActiveId] = useState(categories[0]?.id ?? '');
   const sectionRefs = useRef(new Map<string, HTMLElement>());
@@ -61,7 +63,7 @@ export function MenuSections({
 
           <div className="grid">
             {category.items.map(item => (
-              <MenuItemCard key={item.id} item={item} source={source} />
+              <MenuItemCard key={item.id} item={item} source={source} arDemo={arDemo} />
             ))}
           </div>
         </section>

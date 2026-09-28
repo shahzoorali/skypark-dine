@@ -81,6 +81,26 @@ accordingly once known.
 underscore-field request variants kept for the historical record — not
 updated, since the mismatch is now understood and documented above.
 
+## "View in 3D" / AR on your table (added 2026-09-28)
+
+A dish card shows a **View in 3D** badge only when a 3D model exists for it.
+Tapping opens a 3D viewer (`components/ArView.tsx`, Google `<model-viewer>`,
+lazy-loaded) with **Place it on my table**, which opens the phone camera and
+puts the dish on the table at real size — Android via WebXR/Scene Viewer,
+iPhone via AR Quick Look (USDZ generated on the fly from the GLB). No app.
+
+- Add a model: `npm run model -- scan.glb "<Dish name exactly as in PetPooja>"`
+  — shrinks it (1024px textures, Draco) into `public/models/<slug>.glb` and
+  rebuilds `public/models/manifest.json`. Aim for under 3 MB.
+- Capture: plate the dish, orbit it with a phone scanning app (Polycam, Luma,
+  RealityScan), export GLB. Real-world scale matters — the dish must come out
+  plate-sized on the table.
+- Test on a phone without real scans: add `?ar=demo` to the URL — every dish
+  gets a public-domain sample model (`public/models/_sample-avocado.glb`,
+  CC0, Khronos). Never on by default: guests must not see a model that isn't
+  their dish.
+- Sold-out dishes never show the badge.
+
 ## Architecture notes
 
 - `lib/petpooja/types.ts` — raw PetPooja wire types, modelled from docs

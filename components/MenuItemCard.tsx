@@ -1,5 +1,7 @@
 import type { Menu, MenuItem } from '@/lib/menu';
 import { itemPhoto } from '@/lib/photos';
+import { itemModel } from '@/lib/models';
+import { ArView } from './ArView';
 
 const DIET_LABEL: Record<MenuItem['diet'], string> = {
   veg: 'Vegetarian',
@@ -15,11 +17,14 @@ function formatPrice(value: number): string {
 export function MenuItemCard({
   item,
   source,
+  arDemo,
 }: {
   item: MenuItem;
   source: Menu['source'];
+  arDemo: boolean;
 }) {
   const photo = itemPhoto(item, source);
+  const model = item.inStock ? itemModel(item, arDemo) : undefined;
 
   return (
     <article className={`card${item.inStock ? '' : ' card--out'}`}>
@@ -31,6 +36,7 @@ export function MenuItemCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img className="card__img" src={photo} alt="" loading="lazy" />
         ) : null}
+        {model ? <ArView src={model} dishName={item.name} /> : null}
       </div>
 
       <div className="card__body">

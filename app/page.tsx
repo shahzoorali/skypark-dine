@@ -11,16 +11,20 @@ export const dynamic = 'force-dynamic';
 export default async function MenuPage({
   searchParams,
 }: {
-  searchParams: Promise<{ table?: string }>;
+  searchParams: Promise<{ table?: string; ar?: string }>;
 }) {
-  const { table } = await searchParams;
+  const { table, ar } = await searchParams;
   const menu = await getMenu({ tableNo: table });
 
   return (
     <main className="app">
       <MenuHeader tableNo={table} />
       <Hero restaurantName={menu.restaurantName} imageUrl={heroPhoto} />
-      <MenuSections categories={menu.categories} source={menu.source} />
+      <MenuSections
+        categories={menu.categories}
+        source={menu.source}
+        arDemo={ar === 'demo'}
+      />
 
       {!flags.ordering ? (
         <div className="waiter">

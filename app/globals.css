@@ -381,6 +381,113 @@ body { font-family: var(--font-body); }
 .diet--egg { color: var(--skypark-gold); }
 .diet--unknown { display: none; }
 
+/* ── View on your table (AR) ── */
+.ar-btn {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px 6px 8px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--skypark-orange);
+  color: var(--fg-on-brand);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.ar-btn:hover { background: var(--skypark-orange-shade); }
+.ar-btn:disabled { opacity: 0.6; cursor: progress; }
+
+.ar-dialog {
+  width: 100%;
+  max-width: 560px;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  background: var(--skypark-charcoal);
+  color: var(--fg-on-inverse);
+  display: flex;
+  flex-direction: column;
+}
+
+.ar-dialog:not([open]) { display: none; }
+.ar-dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+
+.ar-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: calc(var(--space-3) + env(safe-area-inset-top, 0px)) var(--space-4) var(--space-3);
+}
+
+.ar-dialog__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  line-height: var(--lh-snug);
+  color: var(--fg-on-inverse);
+}
+
+.ar-dialog__close {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(245, 240, 232, 0.1);
+  color: var(--fg-on-inverse);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ar-dialog__viewer {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: radial-gradient(circle at 50% 40%, #4a3a2a, #1c1712 75%);
+  --poster-color: transparent;
+}
+
+.ar-dialog__launch {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--skypark-orange);
+  color: var(--fg-on-brand);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow-e2);
+}
+
+.ar-dialog__hint {
+  padding: var(--space-3) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+  color: var(--fg-on-inverse-2);
+  text-align: center;
+}
+
 /* ── Call a waiter (phase 1 CTA) ── */
 .waiter {
   position: sticky;
