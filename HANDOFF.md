@@ -20,11 +20,9 @@ no Tailwind. Target domain: dine.skyparkcafe.in (Vercel, not yet deployed).
 Design: ~80-100% drawn from https://resturantweb-plum.vercel.app/ (Savoria
 reference), grounded in Skypark's own brand tokens (`app/tokens.css`,
 exported from a Claude Design canvas — orange #F37021, gold #D4A847,
-charcoal #2D2D2D, cream #F5F0E8). Two homepage variants exist and
-Shahzoor has NOT YET PICKED ONE:
-- `/` — menu-first grid layout
-- `/v2` — Savoria-style single-dish showcase carousel
-Ask him which to keep; the other should then be removed or demoted.
+charcoal #2D2D2D, cream #F5F0E8). Homepage is `/`, the menu-first grid
+layout. A `/v2` single-dish showcase carousel was built and removed
+2026-09-28 at Shahzoor's call (recoverable from git history).
 
 ## PetPooja live menu API — RESOLVED and VALIDATED 2026-09-26
 
@@ -132,5 +130,4 @@ updated, since the mismatch is now understood and documented above.
 
 ## Also still undecided (ask Shahzoor, don't assume)
 
-1. Which homepage to keep: `/` vs `/v2`.
-2. Phase 2 order flow: WhatsApp handoff vs. PetPooja `save_kot_qr_order`.
+1. Phase 2 order flow: WhatsApp handoff vs. PetPooja `save_kot_qr_order`.
