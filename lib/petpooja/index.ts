@@ -8,7 +8,6 @@ export { PetpoojaError } from './client';
 type Source = Menu['source'];
 
 function activeSource(): Source {
-  console.log('[diag] MENU_SOURCE=', JSON.stringify(process.env.MENU_SOURCE));
   return process.env.MENU_SOURCE === 'petpooja' ? 'petpooja' : 'mock';
 }
 
