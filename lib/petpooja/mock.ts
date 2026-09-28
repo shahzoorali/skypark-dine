@@ -100,7 +100,7 @@ export function mockMenuResponse(): PetpoojaMenuResponse {
               ]
             : [],
         active: '1',
-        instock: '1',
+        instock: '2',
         itemrank: String(itemIndex),
       });
     }
