@@ -6,6 +6,9 @@ frontend:
         - npm ci
     build:
       commands:
+        # Amplify only exposes console env vars at build time; write the
+        # server-side ones to .env.production so the SSR runtime can read them.
+        - env | grep -E '^(MENU_SOURCE|MENU_CACHE_TTL_MS|PETPOOJA_)' >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
