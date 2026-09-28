@@ -36,10 +36,12 @@ function normalizeItem(raw: PetpoojaItem): MenuItem {
     imageUrl: raw.item_image_url || undefined,
     categoryId: raw.item_categoryid,
     // Real payload (2026-09-26) uses "instock", not the "in_stock" the docs
-    // showed, and only ever sends "1" or "2" — never "0". Which of 1/2 means
-    // out-of-stock is UNCONFIRMED; this in/out mapping is a placeholder
-    // pending Shahzoor checking a known out-of-stock item in PetPooja admin.
-    inStock: raw.instock !== '0',
+    // showed, and only ever sends "1" or "2" — never "0". PetPooja has not
+    // confirmed which value means out-of-stock; inferred from distribution
+    // (240/256 items were "2", 16 were "1" — "2" read as the default
+    // in-stock state, "1" as the minority 86'd items). Revisit if PetPooja
+    // confirms otherwise.
+    inStock: raw.instock !== '1' && raw.instock !== '0',
     rank: num(raw.itemrank, 9999),
     tags: raw.item_tags ?? [],
   };

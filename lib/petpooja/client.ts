@@ -74,8 +74,8 @@ export async function fetchDineInMenu(
   tableNo?: string,
 ): Promise<PetpoojaMenuResponse> {
   const creds = credentials();
-  const table = tableNo ?? process.env.PETPOOJA_DEFAULT_TABLE_NO ?? '';
-  const endpoint = process.env.PETPOOJA_MENU_ENDPOINT ?? MENU_ENDPOINT_STAGING;
+  const table = tableNo || process.env.PETPOOJA_DEFAULT_TABLE_NO || '';
+  const endpoint = process.env.PETPOOJA_MENU_ENDPOINT || MENU_ENDPOINT_STAGING;
 
   const response = await fetch(endpoint, {
     method: 'POST',
